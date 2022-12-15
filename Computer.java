@@ -17,7 +17,7 @@ public class Computer {
             Game.runMove((int) Math.floor((Math.random()*((sticks/2)+1))+1));
         }
         if (difficulty == "medium") {
-            
+
         }
     }
 }
