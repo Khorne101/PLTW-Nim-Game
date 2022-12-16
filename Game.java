@@ -1,3 +1,5 @@
+import java.lang.InterruptedException;
+import java.util.concurrent.*;
 public class Game {
     private static GLib gui;
     private static boolean computerFirst;
@@ -19,19 +21,34 @@ public class Game {
         if (move > sticks/2) {
             gui.displayMsg("You can't take that many sticks, only up to half of the sticks left not over!");
         } else if ((sticks - move) == 1) {
+            if (cpu.isActive()) {
+                if (player == 1 && computerFirst) {
+                    gui.displayMsg("CPU has won!");
+                } else if (player == 2 && !computerFirst) {
+                    gui.displayMsg("CPU has won!");
+                } else {
+                    gui.displayMsg("Player has won!");
+                }
+            } else {
             gui.displayMsg("Player " + player + " Has won!");
-            startGame();
+            }
+            ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+            Runnable task2 = () ->  startGame();
+            ses.schedule(task2, 2, TimeUnit.SECONDS);
+            ses.shutdown();
         } else {
             sticks -= move;
             gui.updateSticks(sticks);
             player = (player == 1)? 2:1;
-            gui.displayMsg("Player " + player + " go.");
             if (cpu.isActive()) {
+                gui.displayMsg("Player go.");
                 if (player == 1 && computerFirst) {
                     cpu.turn(1, sticks);
                 } else if (player == 2 && !computerFirst) {
                     cpu.turn(2, sticks);
                 }
+            } else {
+                gui.displayMsg("Player " + player + " go.");
             }
         }
     }
@@ -41,11 +58,13 @@ public class Game {
             if (Math.round(Math.random()*1.1) == 0) {
                 computerFirst = false;
                 gui.displayMsg("CPU goes second");
+                System.out.println("CPU SECOND");
             } else {
                 computerFirst = true;
                 gui.displayMsg("CPU goes first");
+                System.out.println("CPU FIRST");
             }
-        } else {
+        } else if (!cpu.isActive()) {
             if (Math.round(Math.random()*1.1) == 0) {
                 player1first = true;
                 gui.displayMsg("Player 1 goes first.");

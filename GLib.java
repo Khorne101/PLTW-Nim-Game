@@ -26,7 +26,7 @@ public class GLib {
         line5 = new JLabel();
         line6 = new JLabel();
         line7 = new JLabel();
-        entryBox = new JTextField("Input number of sticks to take.");
+        entryBox = new JTextField("");
         line1.setBounds(0, 12, 800, 12);
         line2.setBounds(0, 24, 800, 12);
         line3.setBounds(0, 36, 800, 12);
