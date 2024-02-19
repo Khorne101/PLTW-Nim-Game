@@ -1,24 +1,28 @@
-import java.lang.InterruptedException;
+
 import java.util.concurrent.*;
+
 public class Game {
     private static GLib gui;
     private static boolean computerFirst;
     private static Computer cpu;
-    private static Player player1, player2;
+    // private static Player player1, player2;
     private static Boolean player1first = false;
     private static int sticks;
     private static int player;
+
     public Game() {
     }
+
     public void play() {
-        player1 = new Player();
-        player2 = new Player();
+        // player1 = new Player();
+        // player2 = new Player();
         cpu = new Computer();
         gui = new GLib(cpu);
         sticks = Board.getSticks();
     }
+
     public static void runMove(int move) {
-        if (move > sticks/2) {
+        if (move > sticks / 2) {
             gui.displayMsg("You can't take that many sticks, only up to half of the sticks left not over!");
         } else if ((sticks - move) == 1) {
             if (cpu.isActive()) {
@@ -30,16 +34,16 @@ public class Game {
                     gui.displayMsg("Player has won!");
                 }
             } else {
-            gui.displayMsg("Player " + player + " Has won!");
+                gui.displayMsg("Player " + player + " Has won!");
             }
             ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-            Runnable task2 = () ->  startGame();
+            Runnable task2 = () -> startGame();
             ses.schedule(task2, 2, TimeUnit.SECONDS);
             ses.shutdown();
         } else {
             sticks -= move;
             gui.updateSticks(sticks);
-            player = (player == 1)? 2:1;
+            player = (player == 1) ? 2 : 1;
             if (cpu.isActive()) {
                 gui.displayMsg("Player go.");
                 if (player == 1 && computerFirst) {
@@ -52,10 +56,11 @@ public class Game {
             }
         }
     }
+
     public static void startGame() {
         player = 1;
         if (cpu.isActive()) {
-            if (Math.round(Math.random()*1.1) == 0) {
+            if (Math.round(Math.random() * 1.1) == 0) {
                 computerFirst = false;
                 gui.displayMsg("CPU goes second");
                 System.out.println("CPU SECOND");
@@ -65,7 +70,7 @@ public class Game {
                 System.out.println("CPU FIRST");
             }
         } else if (!cpu.isActive()) {
-            if (Math.round(Math.random()*1.1) == 0) {
+            if (Math.round(Math.random() * 1.1) == 0) {
                 player1first = true;
                 gui.displayMsg("Player 1 goes first.");
             } else {
@@ -77,6 +82,7 @@ public class Game {
         sticks = Board.getSticks();
         gui.setupGame();
     }
+
     public static boolean isFirstPlayerFirst() {
         return player1first;
     }
